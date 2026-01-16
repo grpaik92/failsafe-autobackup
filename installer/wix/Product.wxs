@@ -65,7 +65,7 @@
         </StandardDirectory>
 
         <!-- Component: Windows Service Executable -->
-        <Component Id="ServiceExecutable" Directory="ServiceFolder" Guid="A1B2C3D4-E5F6-4A5B-9C8D-7E6F5A4B3C2D">
+        <Component Id="ServiceExecutable" Directory="ServiceFolder" Guid="BF11B56D-0EFA-4112-8F04-A1B76382CA01">
             <File Id="ServiceExe" Source="..\..\publish\service\FailsafeAutoBackup.Service.exe" KeyPath="yes" />
             
             <!-- Install Windows Service -->
@@ -98,18 +98,18 @@
         </Component>
 
         <!-- Component: Tray Application Executable -->
-        <Component Id="TrayAppExecutable" Directory="TrayAppFolder" Guid="B2C3D4E5-F6A7-5B6C-AD9E-8F7A6B5C4D3E">
+        <Component Id="TrayAppExecutable" Directory="TrayAppFolder" Guid="829DC472-33C0-48E6-A53E-BAD518AA6AAB">
             <File Id="TrayAppExe" Source="..\..\publish\trayapp\FailsafeAutoBackup.TrayApp.exe" KeyPath="yes" />
         </Component>
 
         <!-- Component: Logs Directory -->
-        <Component Id="LogsDirectory" Directory="LogsFolder" Guid="C3D4E5F6-A7B8-6C7D-BE0F-9A8B7C6D5E4F">
+        <Component Id="LogsDirectory" Directory="LogsFolder" Guid="EC4045AF-6D87-4044-9939-1B8116A37DBE">
             <CreateFolder />
             <RemoveFolder Id="RemoveLogsFolder" On="uninstall" />
         </Component>
 
         <!-- Component: Start Menu Shortcut -->
-        <Component Id="StartMenuShortcut" Directory="ApplicationProgramsFolder" Guid="D4E5F6A7-B8C9-7D8E-CF1A-0B9C8D7E6F5A">
+        <Component Id="StartMenuShortcut" Directory="ApplicationProgramsFolder" Guid="123687ED-81E1-4DD0-AC5F-1DB3533545FF">
             <Shortcut
                 Id="TrayAppStartMenuShortcut"
                 Name="Failsafe AutoBackup"
@@ -121,7 +121,7 @@
         </Component>
 
         <!-- Component: Desktop Shortcut (Optional) -->
-        <Component Id="DesktopShortcut" Directory="DesktopFolder" Guid="E5F6A7B8-C9DA-8E9F-DA2B-1C0D9E8F7A6B">
+        <Component Id="DesktopShortcut" Directory="DesktopFolder" Guid="1A197F99-A77D-4127-9FF6-EBF51CDB6293">
             <Shortcut
                 Id="TrayAppDesktopShortcut"
                 Name="Failsafe AutoBackup"
@@ -132,7 +132,7 @@
         </Component>
 
         <!-- Component: Auto-start Registry Entry -->
-        <Component Id="AutoStartRegistry" Directory="INSTALLFOLDER" Guid="F6A7B8C9-DAEB-9FAD-EB3C-2D1E0F9A8B7C">
+        <Component Id="AutoStartRegistry" Directory="INSTALLFOLDER" Guid="04BAFCC4-2ACE-409D-A499-FB95D852C4D3">
             <RegistryValue
                 Root="HKCU"
                 Key="Software\Microsoft\Windows\CurrentVersion\Run"

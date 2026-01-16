@@ -143,7 +143,7 @@ if (-not $wixInstalled) {
 Write-Host "[7/7] Building MSI installer..." -ForegroundColor Green
 
 Set-Location "installer/wix"
-wix build Product.wxs -ext WixToolset.UI.wixext -arch x64 -out "../../FailsafeAutoBackup.msi"
+wix build Product.wxs -ext WixToolset.UI.wixext -arch x64 -out "$RepoRoot\FailsafeAutoBackup.msi"
 
 if ($LASTEXITCODE -ne 0) {
     Write-Host "  ✗ Failed to build MSI installer" -ForegroundColor Red

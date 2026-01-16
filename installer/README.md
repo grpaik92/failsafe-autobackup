@@ -150,12 +150,12 @@ The WiX installer is **production-ready** and includes:
 
 The following GUIDs are used in the installer:
 - Package UpgradeCode: `C33254F0-25AF-4342-95AD-D74F2D726684`
-- Service Executable: `A1B2C3D4-E5F6-4A5B-9C8D-7E6F5A4B3C2D`
-- TrayApp Executable: `B2C3D4E5-F6A7-5B6C-AD9E-8F7A6B5C4D3E`
-- Logs Directory: `C3D4E5F6-A7B8-6C7D-BE0F-9A8B7C6D5E4F`
-- Start Menu Shortcut: `D4E5F6A7-B8C9-7D8E-CF1A-0B9C8D7E6F5A`
-- Desktop Shortcut: `E5F6A7B8-C9DA-8E9F-DA2B-1C0D9E8F7A6B`
-- Auto-Start Registry: `F6A7B8C9-DAEB-9FAD-EB3C-2D1E0F9A8B7C`
+- Service Executable: `BF11B56D-0EFA-4112-8F04-A1B76382CA01`
+- TrayApp Executable: `829DC472-33C0-48E6-A53E-BAD518AA6AAB`
+- Logs Directory: `EC4045AF-6D87-4044-9939-1B8116A37DBE`
+- Start Menu Shortcut: `123687ED-81E1-4DD0-AC5F-1DB3533545FF`
+- Desktop Shortcut: `1A197F99-A77D-4127-9FF6-EBF51CDB6293`
+- Auto-Start Registry: `04BAFCC4-2ACE-409D-A499-FB95D852C4D3`
 
 **Important**: These GUIDs must remain constant across versions to ensure proper upgrades.
 
