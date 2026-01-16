@@ -1,0 +1,240 @@
+{
+  "format": 1,
+  "restore": {
+    "/home/runner/work/failsafe-autobackup/failsafe-autobackup/src/FailsafeAutoBackup.Service/FailsafeAutoBackup.Service.csproj": {}
+  },
+  "projects": {
+    "/home/runner/work/failsafe-autobackup/failsafe-autobackup/src/FailsafeAutoBackup.IPC/FailsafeAutoBackup.IPC.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "/home/runner/work/failsafe-autobackup/failsafe-autobackup/src/FailsafeAutoBackup.IPC/FailsafeAutoBackup.IPC.csproj",
+        "projectName": "FailsafeAutoBackup.IPC",
+        "projectPath": "/home/runner/work/failsafe-autobackup/failsafe-autobackup/src/FailsafeAutoBackup.IPC/FailsafeAutoBackup.IPC.csproj",
+        "packagesPath": "/home/runner/.nuget/packages/",
+        "outputPath": "/home/runner/work/failsafe-autobackup/failsafe-autobackup/src/FailsafeAutoBackup.IPC/obj/",
+        "projectStyle": "PackageReference",
+        "configFilePaths": [
+          "/home/runner/.nuget/NuGet/NuGet.Config"
+        ],
+        "originalTargetFrameworks": [
+          "net8.0-windows"
+        ],
+        "sources": {
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "net8.0-windows7.0": {
+            "targetAlias": "net8.0-windows",
+            "projectReferences": {
+              "/home/runner/work/failsafe-autobackup/failsafe-autobackup/src/FailsafeAutoBackup.Shared/FailsafeAutoBackup.Shared.csproj": {
+                "projectPath": "/home/runner/work/failsafe-autobackup/failsafe-autobackup/src/FailsafeAutoBackup.Shared/FailsafeAutoBackup.Shared.csproj"
+              }
+            }
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        },
+        "restoreAuditProperties": {
+          "enableAudit": "true",
+          "auditLevel": "low",
+          "auditMode": "direct"
+        },
+        "SdkAnalysisLevel": "10.0.100"
+      },
+      "frameworks": {
+        "net8.0-windows7.0": {
+          "targetAlias": "net8.0-windows",
+          "dependencies": {
+            "System.IO.Pipes.AccessControl": {
+              "target": "Package",
+              "version": "[5.0.0, )"
+            }
+          },
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48",
+            "net481"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "downloadDependencies": [
+            {
+              "name": "Microsoft.WindowsDesktop.App.Ref",
+              "version": "[8.0.22, 8.0.22]"
+            }
+          ],
+          "frameworkReferences": {
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "/usr/share/dotnet/sdk/10.0.101/PortableRuntimeIdentifierGraph.json"
+        }
+      }
+    },
+    "/home/runner/work/failsafe-autobackup/failsafe-autobackup/src/FailsafeAutoBackup.Service/FailsafeAutoBackup.Service.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "/home/runner/work/failsafe-autobackup/failsafe-autobackup/src/FailsafeAutoBackup.Service/FailsafeAutoBackup.Service.csproj",
+        "projectName": "FailsafeAutoBackup.Service",
+        "projectPath": "/home/runner/work/failsafe-autobackup/failsafe-autobackup/src/FailsafeAutoBackup.Service/FailsafeAutoBackup.Service.csproj",
+        "packagesPath": "/home/runner/.nuget/packages/",
+        "outputPath": "/home/runner/work/failsafe-autobackup/failsafe-autobackup/src/FailsafeAutoBackup.Service/obj/",
+        "projectStyle": "PackageReference",
+        "configFilePaths": [
+          "/home/runner/.nuget/NuGet/NuGet.Config"
+        ],
+        "originalTargetFrameworks": [
+          "net8.0-windows"
+        ],
+        "sources": {
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "net8.0-windows7.0": {
+            "targetAlias": "net8.0-windows",
+            "projectReferences": {
+              "/home/runner/work/failsafe-autobackup/failsafe-autobackup/src/FailsafeAutoBackup.IPC/FailsafeAutoBackup.IPC.csproj": {
+                "projectPath": "/home/runner/work/failsafe-autobackup/failsafe-autobackup/src/FailsafeAutoBackup.IPC/FailsafeAutoBackup.IPC.csproj"
+              },
+              "/home/runner/work/failsafe-autobackup/failsafe-autobackup/src/FailsafeAutoBackup.Shared/FailsafeAutoBackup.Shared.csproj": {
+                "projectPath": "/home/runner/work/failsafe-autobackup/failsafe-autobackup/src/FailsafeAutoBackup.Shared/FailsafeAutoBackup.Shared.csproj"
+              }
+            }
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        },
+        "restoreAuditProperties": {
+          "enableAudit": "true",
+          "auditLevel": "low",
+          "auditMode": "direct"
+        },
+        "SdkAnalysisLevel": "10.0.100"
+      },
+      "frameworks": {
+        "net8.0-windows7.0": {
+          "targetAlias": "net8.0-windows",
+          "dependencies": {
+            "Microsoft.Extensions.Hosting": {
+              "target": "Package",
+              "version": "[8.0.1, )"
+            },
+            "Microsoft.Extensions.Hosting.WindowsServices": {
+              "target": "Package",
+              "version": "[8.0.1, )"
+            },
+            "Polly": {
+              "target": "Package",
+              "version": "[8.2.0, )"
+            },
+            "Serilog.Extensions.Hosting": {
+              "target": "Package",
+              "version": "[8.0.0, )"
+            },
+            "Serilog.Sinks.Console": {
+              "target": "Package",
+              "version": "[5.0.1, )"
+            },
+            "Serilog.Sinks.File": {
+              "target": "Package",
+              "version": "[5.0.0, )"
+            }
+          },
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48",
+            "net481"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "downloadDependencies": [
+            {
+              "name": "Microsoft.WindowsDesktop.App.Ref",
+              "version": "[8.0.22, 8.0.22]"
+            }
+          ],
+          "frameworkReferences": {
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "/usr/share/dotnet/sdk/10.0.101/PortableRuntimeIdentifierGraph.json"
+        }
+      }
+    },
+    "/home/runner/work/failsafe-autobackup/failsafe-autobackup/src/FailsafeAutoBackup.Shared/FailsafeAutoBackup.Shared.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "/home/runner/work/failsafe-autobackup/failsafe-autobackup/src/FailsafeAutoBackup.Shared/FailsafeAutoBackup.Shared.csproj",
+        "projectName": "FailsafeAutoBackup.Shared",
+        "projectPath": "/home/runner/work/failsafe-autobackup/failsafe-autobackup/src/FailsafeAutoBackup.Shared/FailsafeAutoBackup.Shared.csproj",
+        "packagesPath": "/home/runner/.nuget/packages/",
+        "outputPath": "/home/runner/work/failsafe-autobackup/failsafe-autobackup/src/FailsafeAutoBackup.Shared/obj/",
+        "projectStyle": "PackageReference",
+        "configFilePaths": [
+          "/home/runner/.nuget/NuGet/NuGet.Config"
+        ],
+        "originalTargetFrameworks": [
+          "net8.0"
+        ],
+        "sources": {
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "net8.0": {
+            "targetAlias": "net8.0",
+            "projectReferences": {}
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        },
+        "restoreAuditProperties": {
+          "enableAudit": "true",
+          "auditLevel": "low",
+          "auditMode": "direct"
+        },
+        "SdkAnalysisLevel": "10.0.100"
+      },
+      "frameworks": {
+        "net8.0": {
+          "targetAlias": "net8.0",
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48",
+            "net481"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "/usr/share/dotnet/sdk/10.0.101/PortableRuntimeIdentifierGraph.json"
+        }
+      }
+    }
+  }
+}

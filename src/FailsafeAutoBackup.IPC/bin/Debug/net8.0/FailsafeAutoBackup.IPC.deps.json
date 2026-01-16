@@ -1,0 +1,39 @@
+{
+  "runtimeTarget": {
+    "name": ".NETCoreApp,Version=v8.0",
+    "signature": ""
+  },
+  "compilationOptions": {},
+  "targets": {
+    ".NETCoreApp,Version=v8.0": {
+      "FailsafeAutoBackup.IPC/1.0.0": {
+        "dependencies": {
+          "FailsafeAutoBackup.Shared": "1.0.0"
+        },
+        "runtime": {
+          "FailsafeAutoBackup.IPC.dll": {}
+        }
+      },
+      "FailsafeAutoBackup.Shared/1.0.0": {
+        "runtime": {
+          "FailsafeAutoBackup.Shared.dll": {
+            "assemblyVersion": "1.0.0.0",
+            "fileVersion": "1.0.0.0"
+          }
+        }
+      }
+    }
+  },
+  "libraries": {
+    "FailsafeAutoBackup.IPC/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "FailsafeAutoBackup.Shared/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    }
+  }
+}
