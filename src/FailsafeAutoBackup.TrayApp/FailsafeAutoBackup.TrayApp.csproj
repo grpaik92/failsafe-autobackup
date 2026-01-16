@@ -9,4 +9,15 @@
     <EnableWindowsTargeting>true</EnableWindowsTargeting>
   </PropertyGroup>
 
+  <ItemGroup>
+    <PackageReference Include="Hardcodet.NotifyIcon.Wpf" Version="1.1.0" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="8.0.1" />
+    <PackageReference Include="Microsoft.Extensions.Logging" Version="8.0.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\FailsafeAutoBackup.IPC\FailsafeAutoBackup.IPC.csproj" />
+    <ProjectReference Include="..\FailsafeAutoBackup.Shared\FailsafeAutoBackup.Shared.csproj" />
+  </ItemGroup>
+
 </Project>
