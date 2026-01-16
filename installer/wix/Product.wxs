@@ -2,106 +2,175 @@
 <!--
     Failsafe AutoBackup Installer - WiX Source File
     
-    This is a placeholder WiX installer configuration for the Failsafe AutoBackup application.
+    This WiX installer packages the Failsafe AutoBackup application with:
+    - Windows Service (FailsafeAutoBackup.Service)
+    - Tray Application (FailsafeAutoBackup.TrayApp)
+    - Start Menu and Desktop shortcuts
+    - Automatic service installation and startup
     
     To build the installer:
     1. Install WiX Toolset v4 or later
-    2. Run: wix build Product.wxs -o FailsafeAutoBackup.msi
-    
-    Components to be packaged:
-    - Windows Service (FailsafeAutoBackup.Service)
-    - Tray Application (FailsafeAutoBackup.TrayApp)
-    - Backend API (FailsafeAutoBackup.BackendApi) - optional
-    - Shared libraries and dependencies
-    - Configuration files
-    - Database initialization scripts
+    2. Run: wix build Product.wxs -ext WixToolset.UI.wixext -out FailsafeAutoBackup.msi
 -->
 
-<Wix xmlns="http://wixtoolset.org/schemas/v4/wxs">
+<Wix xmlns="http://wixtoolset.org/schemas/v4/wxs"
+     xmlns:util="http://wixtoolset.org/schemas/v4/wxs/util">
+    
     <Package 
         Name="Failsafe AutoBackup" 
         Version="1.0.0.0" 
         Manufacturer="Failsafe AutoBackup Team" 
-        UpgradeCode="GENERATE-NEW-GUID-HERE"
-        Language="1033">
+        UpgradeCode="C33254F0-25AF-4342-95AD-D74F2D726684"
+        Language="1033"
+        InstallerVersion="500"
+        Compressed="yes">
         
         <SummaryInformation 
             Description="Automatic document backup service for Microsoft Word and PDF documents"
-            Comments="Installs Failsafe AutoBackup Windows Service and Tray Application" />
-
-        <!-- Ensure .NET 8 Runtime is installed -->
-        <Launch 
-            Condition="Installed OR NETFRAMEWORK48ORLATER" 
-            Message="This application requires .NET 8 Runtime or later. Please install .NET 8 from https://dotnet.microsoft.com/download" />
+            Comments="Installs Failsafe AutoBackup Windows Service and Tray Application"
+            Manufacturer="Failsafe AutoBackup Team" />
 
         <!-- Media definition -->
         <Media Id="1" Cabinet="product.cab" EmbedCab="yes" />
 
+        <!-- Major upgrade configuration -->
+        <MajorUpgrade 
+            DowngradeErrorMessage="A newer version of [ProductName] is already installed."
+            AllowSameVersionUpgrades="yes" />
+
         <!-- Installation directory structure -->
-        <Directory Id="TARGETDIR" Name="SourceDir">
-            <!-- Program Files -->
-            <Directory Id="ProgramFiles64Folder">
-                <Directory Id="INSTALLFOLDER" Name="FailsafeAutoBackup">
-                    <!-- Service subdirectory -->
-                    <Directory Id="ServiceFolder" Name="Service" />
-                    
-                    <!-- Tray App subdirectory -->
-                    <Directory Id="TrayAppFolder" Name="TrayApp" />
-                    
-                    <!-- Shared libraries -->
-                    <Directory Id="SharedFolder" Name="Shared" />
-                    
-                    <!-- Database scripts -->
-                    <Directory Id="DatabaseFolder" Name="Database" />
-                </Directory>
+        <StandardDirectory Id="ProgramFiles64Folder">
+            <Directory Id="INSTALLFOLDER" Name="FailsafeAutoBackup">
+                <!-- Service subdirectory -->
+                <Directory Id="ServiceFolder" Name="Service" />
+                
+                <!-- Tray App subdirectory -->
+                <Directory Id="TrayAppFolder" Name="TrayApp" />
             </Directory>
+        </StandardDirectory>
 
-            <!-- ProgramData for logs and configuration -->
-            <Directory Id="CommonAppDataFolder">
-                <Directory Id="AppDataFolder" Name="FailsafeAutoBackup">
-                    <Directory Id="LogsFolder" Name="Logs" />
-                </Directory>
+        <!-- ProgramData for logs and configuration -->
+        <StandardDirectory Id="CommonAppDataFolder">
+            <Directory Id="AppDataFolder" Name="FailsafeAutoBackup">
+                <Directory Id="LogsFolder" Name="Logs" />
             </Directory>
+        </StandardDirectory>
 
-            <!-- Desktop shortcut -->
-            <Directory Id="DesktopFolder" Name="Desktop" />
+        <!-- Desktop shortcut -->
+        <StandardDirectory Id="DesktopFolder" />
 
-            <!-- Start Menu -->
-            <Directory Id="ProgramMenuFolder">
-                <Directory Id="ApplicationProgramsFolder" Name="Failsafe AutoBackup" />
-            </Directory>
-        </Directory>
+        <!-- Start Menu -->
+        <StandardDirectory Id="ProgramMenuFolder">
+            <Directory Id="ApplicationProgramsFolder" Name="Failsafe AutoBackup" />
+        </StandardDirectory>
 
-        <!-- PLACEHOLDER: Component groups will be added here -->
-        <!-- Future: Add ComponentGroup for Service files -->
-        <!-- Future: Add ComponentGroup for Tray App files -->
-        <!-- Future: Add ComponentGroup for Shared libraries -->
-        
+        <!-- Component: Windows Service Executable -->
+        <Component Id="ServiceExecutable" Directory="ServiceFolder" Guid="A1B2C3D4-E5F6-4A5B-9C8D-7E6F5A4B3C2D">
+            <File Id="ServiceExe" Source="..\..\publish\service\FailsafeAutoBackup.Service.exe" KeyPath="yes" />
+            
+            <!-- Install Windows Service -->
+            <ServiceInstall
+                Id="FailsafeAutoBackupServiceInstall"
+                Name="FailsafeAutoBackupService"
+                DisplayName="Failsafe AutoBackup Service"
+                Description="Automatic backup service for Microsoft Word and PDF documents"
+                Type="ownProcess"
+                Start="auto"
+                Account="LocalSystem"
+                ErrorControl="normal"
+                Interactive="no">
+                <ServiceConfig
+                    FirstFailureActionType="restart"
+                    SecondFailureActionType="restart"
+                    ThirdFailureActionType="restart"
+                    RestartServiceDelayInSeconds="60"
+                    ResetPeriodInDays="1" />
+            </ServiceInstall>
+            
+            <!-- Control service on install/uninstall -->
+            <ServiceControl
+                Id="StartFailsafeAutoBackupService"
+                Name="FailsafeAutoBackupService"
+                Start="install"
+                Stop="both"
+                Remove="uninstall"
+                Wait="yes" />
+        </Component>
+
+        <!-- Component: Tray Application Executable -->
+        <Component Id="TrayAppExecutable" Directory="TrayAppFolder" Guid="B2C3D4E5-F6A7-5B6C-AD9E-8F7A6B5C4D3E">
+            <File Id="TrayAppExe" Source="..\..\publish\trayapp\FailsafeAutoBackup.TrayApp.exe" KeyPath="yes" />
+        </Component>
+
+        <!-- Component: Logs Directory -->
+        <Component Id="LogsDirectory" Directory="LogsFolder" Guid="C3D4E5F6-A7B8-6C7D-BE0F-9A8B7C6D5E4F">
+            <CreateFolder />
+            <RemoveFolder Id="RemoveLogsFolder" On="uninstall" />
+        </Component>
+
+        <!-- Component: Start Menu Shortcut -->
+        <Component Id="StartMenuShortcut" Directory="ApplicationProgramsFolder" Guid="D4E5F6A7-B8C9-7D8E-CF1A-0B9C8D7E6F5A">
+            <Shortcut
+                Id="TrayAppStartMenuShortcut"
+                Name="Failsafe AutoBackup"
+                Description="Automatic document backup for Word and PDF"
+                Target="[TrayAppFolder]FailsafeAutoBackup.TrayApp.exe"
+                WorkingDirectory="TrayAppFolder" />
+            <RemoveFolder Id="RemoveApplicationProgramsFolder" On="uninstall" />
+            <RegistryValue Root="HKCU" Key="Software\FailsafeAutoBackup\Installed" Name="StartMenu" Type="integer" Value="1" KeyPath="yes" />
+        </Component>
+
+        <!-- Component: Desktop Shortcut (Optional) -->
+        <Component Id="DesktopShortcut" Directory="DesktopFolder" Guid="E5F6A7B8-C9DA-8E9F-DA2B-1C0D9E8F7A6B">
+            <Shortcut
+                Id="TrayAppDesktopShortcut"
+                Name="Failsafe AutoBackup"
+                Description="Automatic document backup for Word and PDF"
+                Target="[TrayAppFolder]FailsafeAutoBackup.TrayApp.exe"
+                WorkingDirectory="TrayAppFolder" />
+            <RegistryValue Root="HKCU" Key="Software\FailsafeAutoBackup\Installed" Name="Desktop" Type="integer" Value="1" KeyPath="yes" />
+        </Component>
+
+        <!-- Component: Auto-start Registry Entry -->
+        <Component Id="AutoStartRegistry" Directory="INSTALLFOLDER" Guid="F6A7B8C9-DAEB-9FAD-EB3C-2D1E0F9A8B7C">
+            <RegistryValue
+                Root="HKCU"
+                Key="Software\Microsoft\Windows\CurrentVersion\Run"
+                Name="FailsafeAutoBackup"
+                Value="[TrayAppFolder]FailsafeAutoBackup.TrayApp.exe"
+                Type="string"
+                KeyPath="yes" />
+        </Component>
+
         <!-- Feature: Main application -->
         <Feature Id="MainApplication" 
                  Title="Failsafe AutoBackup" 
                  Level="1" 
-                 Description="Core application files and Windows service">
-            <!-- ComponentGroupRef elements will be added when component groups are defined -->
+                 Description="Core application files and Windows service"
+                 Display="expand"
+                 ConfigurableDirectory="INSTALLFOLDER">
+            <ComponentRef Id="ServiceExecutable" />
+            <ComponentRef Id="TrayAppExecutable" />
+            <ComponentRef Id="LogsDirectory" />
+            <ComponentRef Id="StartMenuShortcut" />
+            <ComponentRef Id="AutoStartRegistry" />
         </Feature>
 
-        <!-- Feature: Desktop shortcut -->
-        <Feature Id="DesktopShortcut" 
+        <!-- Feature: Desktop shortcut (Optional) -->
+        <Feature Id="DesktopShortcutFeature" 
                  Title="Desktop Shortcut" 
                  Level="1" 
                  Description="Creates a desktop shortcut for easy access">
+            <ComponentRef Id="DesktopShortcut" />
         </Feature>
 
-        <!-- Custom Actions placeholder -->
-        <!-- Future: Add custom action to install Windows Service -->
-        <!-- Future: Add custom action to start Windows Service -->
-        <!-- Future: Add custom action to initialize backup folders -->
-        
         <!-- UI Configuration -->
         <Property Id="WIXUI_INSTALLDIR" Value="INSTALLFOLDER" />
-        
-        <!-- Installation sequence placeholder -->
-        <!-- Future: Define InstallExecuteSequence with custom actions -->
+        <UIRef Id="WixUI_InstallDir" />
+        <UIRef Id="WixUI_ErrorProgressText" />
+
+        <!-- License agreement -->
+        <WixVariable Id="WixUILicenseRtf" Value="License.rtf" />
 
     </Package>
 </Wix>
