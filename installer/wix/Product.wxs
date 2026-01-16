@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Failsafe AutoBackup Installer - WiX Source File
+    
+    This is a placeholder WiX installer configuration for the Failsafe AutoBackup application.
+    
+    To build the installer:
+    1. Install WiX Toolset v4 or later
+    2. Run: wix build Product.wxs -o FailsafeAutoBackup.msi
+    
+    Components to be packaged:
+    - Windows Service (FailsafeAutoBackup.Service)
+    - Tray Application (FailsafeAutoBackup.TrayApp)
+    - Backend API (FailsafeAutoBackup.BackendApi) - optional
+    - Shared libraries and dependencies
+    - Configuration files
+    - Database initialization scripts
+-->
+
+<Wix xmlns="http://wixtoolset.org/schemas/v4/wxs">
+    <Package 
+        Name="Failsafe AutoBackup" 
+        Version="1.0.0.0" 
+        Manufacturer="Failsafe AutoBackup Team" 
+        UpgradeCode="GENERATE-NEW-GUID-HERE"
+        Language="1033">
+        
+        <SummaryInformation 
+            Description="Automatic document backup service for Microsoft Word and PDF documents"
+            Comments="Installs Failsafe AutoBackup Windows Service and Tray Application" />
+
+        <!-- Ensure .NET 8 Runtime is installed -->
+        <Launch 
+            Condition="Installed OR NETFRAMEWORK48ORLATER" 
+            Message="This application requires .NET 8 Runtime or later. Please install .NET 8 from https://dotnet.microsoft.com/download" />
+
+        <!-- Media definition -->
+        <Media Id="1" Cabinet="product.cab" EmbedCab="yes" />
+
+        <!-- Installation directory structure -->
+        <Directory Id="TARGETDIR" Name="SourceDir">
+            <!-- Program Files -->
+            <Directory Id="ProgramFiles64Folder">
+                <Directory Id="INSTALLFOLDER" Name="FailsafeAutoBackup">
+                    <!-- Service subdirectory -->
+                    <Directory Id="ServiceFolder" Name="Service" />
+                    
+                    <!-- Tray App subdirectory -->
+                    <Directory Id="TrayAppFolder" Name="TrayApp" />
+                    
+                    <!-- Shared libraries -->
+                    <Directory Id="SharedFolder" Name="Shared" />
+                    
+                    <!-- Database scripts -->
+                    <Directory Id="DatabaseFolder" Name="Database" />
+                </Directory>
+            </Directory>
+
+            <!-- ProgramData for logs and configuration -->
+            <Directory Id="CommonAppDataFolder">
+                <Directory Id="AppDataFolder" Name="FailsafeAutoBackup">
+                    <Directory Id="LogsFolder" Name="Logs" />
+                </Directory>
+            </Directory>
+
+            <!-- Desktop shortcut -->
+            <Directory Id="DesktopFolder" Name="Desktop" />
+
+            <!-- Start Menu -->
+            <Directory Id="ProgramMenuFolder">
+                <Directory Id="ApplicationProgramsFolder" Name="Failsafe AutoBackup" />
+            </Directory>
+        </Directory>
+
+        <!-- PLACEHOLDER: Component groups will be added here -->
+        <!-- Future: Add ComponentGroup for Service files -->
+        <!-- Future: Add ComponentGroup for Tray App files -->
+        <!-- Future: Add ComponentGroup for Shared libraries -->
+        
+        <!-- Feature: Main application -->
+        <Feature Id="MainApplication" 
+                 Title="Failsafe AutoBackup" 
+                 Level="1" 
+                 Description="Core application files and Windows service">
+            <!-- ComponentGroupRef elements will be added when component groups are defined -->
+        </Feature>
+
+        <!-- Feature: Desktop shortcut -->
+        <Feature Id="DesktopShortcut" 
+                 Title="Desktop Shortcut" 
+                 Level="1" 
+                 Description="Creates a desktop shortcut for easy access">
+        </Feature>
+
+        <!-- Custom Actions placeholder -->
+        <!-- Future: Add custom action to install Windows Service -->
+        <!-- Future: Add custom action to start Windows Service -->
+        <!-- Future: Add custom action to initialize backup folders -->
+        
+        <!-- UI Configuration -->
+        <Property Id="WIXUI_INSTALLDIR" Value="INSTALLFOLDER" />
+        
+        <!-- Installation sequence placeholder -->
+        <!-- Future: Define InstallExecuteSequence with custom actions -->
+
+    </Package>
+</Wix>
