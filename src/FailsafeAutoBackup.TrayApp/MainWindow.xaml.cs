@@ -101,7 +101,7 @@ public partial class MainWindow : Window
                 UpdateStatus(false, DateTime.MinValue);
             }
         }
-        catch (Exception ex)
+        catch (Exception)
         {
             UpdateStatus(false, DateTime.MinValue);
         }
