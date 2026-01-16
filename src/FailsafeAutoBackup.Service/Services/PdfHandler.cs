@@ -57,42 +57,53 @@ public class PdfHandler : IDisposable
             // PLACEHOLDER: Future implementation will use COM automation
             // Example of what the implementation would look like:
             //
-            // Type? acroAppType = Type.GetTypeFromProgID("AcroExch.App");
-            // if (acroAppType == null)
+            // Adobe Acrobat provides two main COM interfaces:
+            // - AcroExch.App: Acrobat Exchange Application (older API)
+            // - Acrobat.AcroApp: Acrobat Application object (newer, recommended)
+            //
+            // Recommended approach using AcroExch.App:
+            // Type? appType = Type.GetTypeFromProgID("AcroExch.App");
+            // if (appType == null)
             // {
             //     _logger.LogWarning("Adobe Acrobat COM interface not available");
             //     return documents;
             // }
             //
-            // dynamic? acroApp = Activator.CreateInstance(acroAppType);
-            // if (acroApp != null)
+            // dynamic? acroExchApp = Activator.CreateInstance(appType);
+            // if (acroExchApp != null)
             // {
             //     try
             //     {
-            //         // Get active document
-            //         dynamic avDoc = acroApp.GetActiveDoc();
+            //         // Get active view
+            //         dynamic avDoc = acroExchApp.GetActiveDoc();
             //         if (avDoc != null)
             //         {
+            //             // Get PDDoc from AVDoc
             //             dynamic pdDoc = avDoc.GetPDDoc();
-            //             string filePath = pdDoc.GetFileName();
-            //             
-            //             var backupDoc = new BackupDocument
+            //             if (pdDoc != null)
             //             {
-            //                 FilePath = filePath,
-            //                 ApplicationName = "Adobe Acrobat",
-            //                 Type = DocumentType.Pdf,
-            //                 IsUnsaved = pdDoc.IsModified(),
-            //                 LastBackupTime = DateTime.UtcNow
-            //             };
-            //             documents.Add(backupDoc);
+            //                 // Get file path
+            //                 string filePath = pdDoc.GetFileName();
+            //                 
+            //                 var backupDoc = new BackupDocument
+            //                 {
+            //                     FilePath = filePath,
+            //                     ApplicationName = "Adobe Acrobat",
+            //                     Type = DocumentType.Pdf,
+            //                     IsUnsaved = false, // Acrobat API has limited modification detection
+            //                     LastBackupTime = DateTime.UtcNow
+            //                 };
+            //                 documents.Add(backupDoc);
+            //             }
             //         }
             //         
-            //         // Enumerate all open documents if API supports it
-            //         // Note: Acrobat COM API is limited compared to Word
+            //         // Note: Acrobat COM API is more limited than Word
+            //         // It primarily supports the currently active document
+            //         // Enumerating all open PDFs may require Win32 API process enumeration
             //     }
             //     finally
             //     {
-            //         Marshal.ReleaseComObject(acroApp);
+            //         Marshal.ReleaseComObject(acroExchApp);
             //     }
             // }
 

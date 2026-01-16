@@ -22,8 +22,17 @@
         Name="Failsafe AutoBackup" 
         Version="1.0.0.0" 
         Manufacturer="Failsafe AutoBackup Team" 
-        UpgradeCode="GENERATE-NEW-GUID-HERE"
+        UpgradeCode="PUT-UNIQUE-GUID-HERE"
         Language="1033">
+        
+        <!-- 
+            TODO: Generate a unique GUID for UpgradeCode before building installer
+            PowerShell: [guid]::NewGuid().ToString().ToUpper()
+            Online: https://www.guidgenerator.com/
+            
+            IMPORTANT: Once set, this GUID must NEVER change across versions
+            as it's used for upgrade detection and product identification.
+        -->
         
         <SummaryInformation 
             Description="Automatic document backup service for Microsoft Word and PDF documents"
