@@ -102,3 +102,11 @@ Desktop.ini
 
 # VS Code
 .vscode/
+
+# Publish output (self-contained executables)
+publish/
+*.msi
+
+# WiX build artifacts
+installer/wix/*.wixpdb
+installer/wix/*.wixobj
