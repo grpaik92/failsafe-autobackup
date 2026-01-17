@@ -787,8 +787,6 @@ For convenience, you can create a `build-installer.ps1` script:
 # build-installer.ps1
 # Complete build script for the MSI installer
 
-#Requires -RunAsAdministrator
-
 param(
     [Parameter(Mandatory=$false)]
     [string]$Configuration = "Release",
@@ -857,7 +855,7 @@ if (-not $wixInstalled) {
 
 # Step 8: Install WiX UI Extension
 Write-Host "[8/9] Installing WiX UI Extension..." -ForegroundColor Yellow
-wix extension add WixToolset.UI.wixext --global
+wix extension add WixToolset.UI.wixext
 
 # Step 9: Build MSI
 Write-Host "[9/9] Building MSI installer..." -ForegroundColor Yellow
