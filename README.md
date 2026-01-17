@@ -207,25 +207,47 @@ failsafe-autobackup/
 
 ### Building Installer
 
-The project includes WiX Toolset configuration for building MSI installers.
+The project includes WiX Toolset v4 configuration for building MSI installers.
 
-```bash
-# Build release artifacts
-dotnet publish -c Release
+```powershell
+# Use the automated build script (recommended)
+.\build-installer.ps1
 
-# Build installer (requires WiX Toolset)
-# TODO: Add WiX build commands
+# Or build manually:
+
+# 1. Install WiX Toolset v4
+dotnet tool install --global wix --version 4.0.5
+
+# 2. Add WiX UI Extension
+wix extension add WixToolset.UI.wixext --global
+
+# 3. Publish self-contained executables
+dotnet publish src/FailsafeAutoBackup.Service/FailsafeAutoBackup.Service.csproj `
+    -c Release -r win-x64 --self-contained true `
+    -p:PublishSingleFile=true -o publish/service
+
+dotnet publish src/FailsafeAutoBackup.TrayApp/FailsafeAutoBackup.TrayApp.csproj `
+    -c Release -r win-x64 --self-contained true `
+    -p:PublishSingleFile=true -o publish/trayapp
+
+# 4. Build the MSI installer
+cd installer/wix
+wix build Product.wxs -arch x64 -out ../../FailsafeAutoBackup.msi
 ```
+
+For more details, see [installer/README.md](installer/README.md)
 
 ### GitHub Actions CI/CD
 
 The repository includes a GitHub Actions workflow that:
 - Builds the solution on push/PR
 - Runs tests
-- Creates release artifacts
-- Builds Windows installer (MSI/EXE)
+- Publishes self-contained executables
+- Installs WiX Toolset and extensions
+- Builds Windows MSI installer
+- Uploads all artifacts
 
-See `.github/workflows/build.yml` for details.
+See `.github/workflows/blank.yml` for details.
 
 ## 🧪 Testing
 
