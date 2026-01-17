@@ -150,6 +150,9 @@ $extensionOutput = wix extension add WixToolset.UI.wixext --global 2>&1 | Out-St
 $verifyOutput = wix extension list 2>&1 | Out-String
 if ($verifyOutput -match "WixToolset.UI.wixext") {
     Write-Host "    ✓ WiX UI Extension ready" -ForegroundColor Gray
+    if ($extensionOutput -match "successfully added" -or $extensionOutput -match "added extension") {
+        Write-Host "    → Extension was newly installed" -ForegroundColor Gray
+    }
 } else {
     Write-Host "  ✗ Failed to add WiX UI Extension" -ForegroundColor Red
     Write-Host "    Output: $($extensionOutput.Trim())" -ForegroundColor Red
