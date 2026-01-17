@@ -716,7 +716,7 @@ wix extension add WixToolset.UI.wixext
 
 # Step 8: Build the MSI installer
 cd installer/wix
-wix build Product.wxs -ext WixToolset.UI.wixext -arch x64 -out ../../FailsafeAutoBackup.msi
+wix build Product.wxs -ext WixToolset.UI.wixext/4.0.5 -arch x64 -out ../../FailsafeAutoBackup.msi
 
 # Step 9: Verify the MSI was created
 cd ../..
@@ -741,7 +741,11 @@ error WIX0144: The extension 'WixToolset.UI.wixext' could not be found.
 
 **Solution**:
 ```powershell
-# Install the WiX UI extension
+# The WiX UI extension version must match the WiX version (4.0.5)
+# Use the version-specific extension reference in the build command:
+wix build Product.wxs -ext WixToolset.UI.wixext/4.0.5 -arch x64 -out ../../FailsafeAutoBackup.msi
+
+# Alternatively, install the extension explicitly (may not work in all cases):
 wix extension add WixToolset.UI.wixext
 
 # Verify the extension is installed
@@ -776,7 +780,7 @@ error LGHT0103: The system cannot find the file 'License.rtf'
 ```powershell
 # Ensure you're in the installer/wix directory when building
 cd installer/wix
-wix build Product.wxs -ext WixToolset.UI.wixext -arch x64 -out ../../FailsafeAutoBackup.msi
+wix build Product.wxs -ext WixToolset.UI.wixext/4.0.5 -arch x64 -out ../../FailsafeAutoBackup.msi
 ```
 
 ### Build Script
@@ -860,7 +864,7 @@ wix extension add WixToolset.UI.wixext
 # Step 9: Build MSI
 Write-Host "[9/9] Building MSI installer..." -ForegroundColor Yellow
 Set-Location "installer/wix"
-wix build Product.wxs -ext WixToolset.UI.wixext -arch x64 -out "../../$OutputPath"
+wix build Product.wxs -ext WixToolset.UI.wixext/4.0.5 -arch x64 -out "../../$OutputPath"
 Set-Location "../.."
 
 # Verify
@@ -1071,7 +1075,7 @@ This issue was resolved in the latest workflow. If you're still experiencing it:
 - name: Build WiX Installer
   run: |
     cd installer/wix
-    wix build Product.wxs -ext WixToolset.UI.wixext -arch x64 -out ../../FailsafeAutoBackup.msi
+    wix build Product.wxs -ext WixToolset.UI.wixext/4.0.5 -arch x64 -out ../../FailsafeAutoBackup.msi
 ```
 
 **Root Cause**: WiX Toolset v4 requires UI extensions to be installed separately. The workflow was missing the step to install the `WixToolset.UI.wixext` extension.

@@ -41,13 +41,10 @@ jobs:
     - name: Install WiX Toolset
       run: dotnet tool install --global wix --version 4.0.5
     
-    - name: Install WiX UI Extension
-      run: wix extension add WixToolset.UI.wixext
-    
     - name: Build WiX Installer
       run: |
         cd installer/wix
-        wix build Product.wxs -ext WixToolset.UI.wixext -arch x64 -out ../../FailsafeAutoBackup.msi
+        wix build Product.wxs -ext WixToolset.UI.wixext/4.0.5 -arch x64 -out ../../FailsafeAutoBackup.msi
     
     - name: Upload Service Artifact
       uses: actions/upload-artifact@v4
