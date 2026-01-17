@@ -139,11 +139,20 @@ if (-not $wixInstalled) {
     Write-Host "  ✓ WiX Toolset installed" -ForegroundColor Gray
 }
 
+# Install WiX UI Extension (required for WixUI_InstallDir)
+Write-Host "  → Installing WiX UI Extension..." -ForegroundColor Gray
+wix extension add WixToolset.UI.wixext 2>&1 | Out-Null
+if ($LASTEXITCODE -eq 0) {
+    Write-Host "  ✓ WiX UI Extension installed" -ForegroundColor Gray
+} else {
+    Write-Host "  ⚠ WiX UI Extension may already be installed or installation failed (non-fatal)" -ForegroundColor Yellow
+}
+
 # Step 7: Build MSI installer
 Write-Host "[7/7] Building MSI installer..." -ForegroundColor Green
 
 Set-Location "installer/wix"
-wix build Product.wxs -ext WixToolset.UI.wixext -arch x64 -out "$RepoRoot\FailsafeAutoBackup.msi"
+wix build Product.wxs -ext WixToolset.UI.wixext/4.0.5 -arch x64 -out "$RepoRoot\FailsafeAutoBackup.msi"
 
 if ($LASTEXITCODE -ne 0) {
     Write-Host "  ✗ Failed to build MSI installer" -ForegroundColor Red

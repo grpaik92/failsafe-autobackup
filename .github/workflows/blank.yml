@@ -44,8 +44,7 @@ jobs:
     - name: Build WiX Installer
       run: |
         cd installer/wix
-        wix build Product.wxs -ext WixToolset.UI.wixext -arch x64 -out ../../FailsafeAutoBackup.msi
-      continue-on-error: true
+        wix build Product.wxs -ext WixToolset.UI.wixext/4.0.5 -arch x64 -out ../../FailsafeAutoBackup.msi
     
     - name: Upload Service Artifact
       uses: actions/upload-artifact@v4
@@ -66,12 +65,10 @@ jobs:
         path: publish/api/
     
     - name: Upload MSI Installer
-      if: success() || failure()
       uses: actions/upload-artifact@v4
       with:
         name: msi-installer
         path: FailsafeAutoBackup.msi
-      continue-on-error: true
     
     - name: Create Release Archive
       if: github.ref == 'refs/heads/main'
