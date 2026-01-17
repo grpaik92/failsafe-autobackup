@@ -145,11 +145,28 @@ Write-Host "[7/7] Building MSI installer..." -ForegroundColor Green
 # Add WiX UI Extension
 Write-Host "  → Adding WiX UI Extension..." -ForegroundColor Gray
 $extensionOutput = wix extension add WixToolset.UI.wixext --global 2>&1 | Out-String
-if ($LASTEXITCODE -eq 0 -or $extensionOutput -match "already exists") {
+
+# Check if extension is available (either just added or already exists)
+$verifyOutput = wix extension list 2>&1 | Out-String
+if ($verifyOutput -match "WixToolset.UI.wixext") {
     Write-Host "    ✓ WiX UI Extension ready" -ForegroundColor Gray
 } else {
-    Write-Host "    ⚠ Extension installation returned an error, but continuing..." -ForegroundColor Yellow
-    Write-Host "    Output: $($extensionOutput.Trim())" -ForegroundColor Yellow
+    Write-Host "  ✗ Failed to add WiX UI Extension" -ForegroundColor Red
+    Write-Host "    Output: $($extensionOutput.Trim())" -ForegroundColor Red
+    exit 1
+}
+
+# Verify source files exist before building
+$servicePath = "publish\service\FailsafeAutoBackup.Service.exe"
+$trayAppPath = "publish\trayapp\FailsafeAutoBackup.TrayApp.exe"
+
+if (-not (Test-Path $servicePath)) {
+    Write-Host "  ✗ Service executable not found: $servicePath" -ForegroundColor Red
+    exit 1
+}
+if (-not (Test-Path $trayAppPath)) {
+    Write-Host "  ✗ Tray App executable not found: $trayAppPath" -ForegroundColor Red
+    exit 1
 }
 
 Set-Location "installer/wix"

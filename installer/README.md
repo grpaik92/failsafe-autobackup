@@ -46,12 +46,14 @@ dotnet publish src/FailsafeAutoBackup.TrayApp/FailsafeAutoBackup.TrayApp.csproj 
 # Step 2: Add WiX UI Extension (one time setup)
 wix extension add WixToolset.UI.wixext --global
 
-# Step 3: Build the MSI installer
+# Step 3: Build the MSI installer (from repository root)
 cd installer/wix
 wix build Product.wxs -arch x64 -out ../../FailsafeAutoBackup.msi
 
 # Or build using the project file
 wix build FailsafeAutoBackup.Installer.wixproj -arch x64
+
+# Note: These commands assume you are in the repository root directory initially
 ```
 
 ### Installer Features

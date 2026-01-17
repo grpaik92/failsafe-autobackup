@@ -253,7 +253,8 @@ This document outlines the comprehensive testing strategy for Failsafe AutoBacku
 
 #### Files and Directories
 ```powershell
-# Verify installation paths
+# Verify installation paths (assumes default installation directory)
+# For custom installations, check HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall for actual path
 Test-Path "C:\Program Files\FailsafeAutoBackup\Service\FailsafeAutoBackup.Service.exe"
 Test-Path "C:\Program Files\FailsafeAutoBackup\TrayApp\FailsafeAutoBackup.TrayApp.exe"
 Test-Path "C:\ProgramData\FailsafeAutoBackup\Logs"
