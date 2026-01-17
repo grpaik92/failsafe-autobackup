@@ -232,6 +232,156 @@ This document outlines the comprehensive testing strategy for Failsafe AutoBacku
 - Memory leak detection
 - Stress tests (24 hour runs)
 
+## Installer Testing
+
+### Build Verification
+- [ ] WiX Toolset v4.0.5 installs successfully
+- [ ] WixToolset.UI extension installs successfully
+- [ ] MSI builds without errors
+- [ ] MSI file size is reasonable (< 200MB)
+- [ ] No WIX0144 errors during build
+
+### Installation Testing (Clean Windows Environment)
+
+#### Basic Installation
+- [ ] MSI opens and displays welcome screen
+- [ ] License agreement displays correctly
+- [ ] Installation directory selection works
+- [ ] Feature selection shows all components
+- [ ] Progress bar displays during installation
+- [ ] Installation completes successfully
+
+#### Files and Directories
+```powershell
+# Verify installation paths (assumes default installation directory)
+# For custom installations, check HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall for actual path
+Test-Path "C:\Program Files\FailsafeAutoBackup\Service\FailsafeAutoBackup.Service.exe"
+Test-Path "C:\Program Files\FailsafeAutoBackup\TrayApp\FailsafeAutoBackup.TrayApp.exe"
+Test-Path "C:\ProgramData\FailsafeAutoBackup\Logs"
+```
+
+#### Windows Service
+```powershell
+# Check service installation
+Get-Service "FailsafeAutoBackupService"
+
+# Verify service properties
+$service = Get-Service "FailsafeAutoBackupService"
+$service.Status          # Should be: Running
+$service.StartType       # Should be: Automatic
+```
+
+#### Shortcuts
+```powershell
+# Check Start Menu shortcut
+Test-Path "$env:APPDATA\Microsoft\Windows\Start Menu\Programs\Failsafe AutoBackup\Failsafe AutoBackup.lnk"
+
+# Check Desktop shortcut (if selected)
+Test-Path "$env:USERPROFILE\Desktop\Failsafe AutoBackup.lnk"
+```
+
+#### Registry Keys
+```powershell
+# Check auto-start registry
+Get-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Run" -Name "FailsafeAutoBackup"
+```
+
+### Functional Testing Post-Installation
+
+#### Tray Application
+- [ ] Tray App launches successfully
+- [ ] Tray icon appears in system tray
+- [ ] Context menu opens
+- [ ] Configuration window opens
+- [ ] Can connect to Windows Service via IPC
+
+#### Windows Service
+- [ ] Service starts automatically on boot
+- [ ] Service runs without errors
+- [ ] Service logs appear in Logs folder
+- [ ] Service can be stopped/started via Services.msc
+- [ ] Service restarts on failure (verify recovery policy)
+
+#### Integration
+- [ ] Tray App successfully communicates with Service
+- [ ] Backup functionality works end-to-end
+- [ ] Document detection works
+- [ ] Backup files created in correct location
+
+### Upgrade Testing
+```powershell
+# Install version 1.0.0
+msiexec /i FailsafeAutoBackup-v1.0.0.msi /qn
+
+# Upgrade to version 1.1.0
+msiexec /i FailsafeAutoBackup-v1.1.0.msi /qn
+
+# Verify:
+# - Service updates without issues
+# - Configuration preserved
+# - No duplicate services
+# - Old files removed
+```
+
+### Uninstallation Testing
+```powershell
+# Uninstall via MSI
+msiexec /x FailsafeAutoBackup.msi /qn
+
+# Or via Control Panel
+```
+
+#### Verify Cleanup
+- [ ] Service stopped and removed
+- [ ] Executables removed
+- [ ] Shortcuts removed
+- [ ] Registry keys removed (auto-start, etc.)
+- [ ] Logs folder optionally preserved
+- [ ] No leftover processes
+- [ ] Can reinstall without issues
+
+### Silent Installation Testing
+```powershell
+# Silent install
+msiexec /i FailsafeAutoBackup.msi /qn /l*v install.log
+
+# Verify installation succeeded
+if (Get-Service "FailsafeAutoBackupService" -ErrorAction SilentlyContinue) {
+    Write-Host "✓ Silent installation successful"
+} else {
+    Write-Host "✗ Silent installation failed"
+}
+```
+
+### Test Matrix
+
+| Test Scenario | Windows 10 | Windows 11 | Server 2019 | Server 2022 |
+|--------------|-----------|-----------|-------------|-------------|
+| Fresh Install | ✓ | ✓ | ✓ | ✓ |
+| Upgrade | ✓ | ✓ | ✓ | ✓ |
+| Uninstall | ✓ | ✓ | ✓ | ✓ |
+| Silent Install | ✓ | ✓ | ✓ | ✓ |
+| Service Auto-Start | ✓ | ✓ | ✓ | ✓ |
+| Tray App Launch | ✓ | ✓ | N/A | N/A |
+
+### Known Issues and Workarounds
+
+#### Issue: Service fails to start immediately after installation
+**Workaround**: Wait 5-10 seconds and try again. Service may need time to initialize.
+
+#### Issue: Tray App doesn't auto-start on first login
+**Workaround**: Log out and log back in. Auto-start registry key takes effect on next login.
+
+### Installer CI/CD Checklist
+
+- [ ] GitHub Actions workflow runs successfully
+- [ ] WiX Toolset installs in CI environment
+- [ ] WixToolset.UI extension installs in CI
+- [ ] MSI artifact uploads successfully
+- [ ] MSI artifact is downloadable
+- [ ] No WIX0144 errors in CI logs
+- [ ] Build completes in < 10 minutes
+
 ## Test Automation
 
 ### Tools

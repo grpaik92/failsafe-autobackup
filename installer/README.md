@@ -13,8 +13,13 @@ The primary installer is built using [WiX Toolset v4](https://wixtoolset.org/).
    dotnet tool install --global wix --version 4.0.5
    ```
 
-2. Build the solution in Release mode
-3. Publish self-contained executables
+2. Add WiX UI Extension:
+   ```bash
+   wix extension add WixToolset.UI.wixext --global
+   ```
+
+3. Build the solution in Release mode
+4. Publish self-contained executables
 
 ### Building the Installer
 
@@ -38,12 +43,17 @@ dotnet publish src/FailsafeAutoBackup.TrayApp/FailsafeAutoBackup.TrayApp.csproj 
     -p:EnableCompressionInSingleFile=true `
     -o publish/trayapp
 
-# Step 2: Build the MSI installer
+# Step 2: Add WiX UI Extension (one time setup)
+wix extension add WixToolset.UI.wixext --global
+
+# Step 3: Build the MSI installer (from repository root)
 cd installer/wix
-wix build Product.wxs -ext WixToolset.UI.wixext -arch x64 -out ../../FailsafeAutoBackup.msi
+wix build Product.wxs -arch x64 -out ../../FailsafeAutoBackup.msi
 
 # Or build using the project file
 wix build FailsafeAutoBackup.Installer.wixproj -arch x64
+
+# Note: These commands assume you are in the repository root directory initially
 ```
 
 ### Installer Features
@@ -211,6 +221,16 @@ dotnet tool install --global wix --version 4.0.5
 
 # Verify installation
 wix --version
+```
+
+**Issue: WixToolset.UI.wixext not found (WIX0144)**
+
+```bash
+# Add the UI extension globally
+wix extension add WixToolset.UI.wixext --global
+
+# Verify extensions
+wix extension list
 ```
 
 **Issue: Source files not found**

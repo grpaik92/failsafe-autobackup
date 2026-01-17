@@ -9,8 +9,9 @@
     - Automatic service installation and startup
     
     To build the installer:
-    1. Install WiX Toolset v4 or later
-    2. Run: wix build Product.wxs -ext WixToolset.UI.wixext -out FailsafeAutoBackup.msi
+    1. Install WiX Toolset v4 or later: dotnet tool install --global wix --version 4.0.5
+    2. Add UI extension: wix extension add WixToolset.UI.wixext --global
+    3. Run: wix build Product.wxs -arch x64 -out FailsafeAutoBackup.msi
 -->
 
 <Wix xmlns="http://wixtoolset.org/schemas/v4/wxs"
