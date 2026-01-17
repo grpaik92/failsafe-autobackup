@@ -6,6 +6,14 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <UserSecretsId>dotnet-FailsafeAutoBackup.Service-2e4195bb-1072-46c4-b4a0-50ecb1e5973f</UserSecretsId>
     <EnableWindowsTargeting>true</EnableWindowsTargeting>
+    <!-- Enable self-contained publishing so the .NET runtime is included -->
+    <SelfContained>true</SelfContained>
+    <!-- Specify the runtime identifier -->
+    <RuntimeIdentifier>win-x64</RuntimeIdentifier>
+    <!-- Preferred for enhanced user experience -->
+    <PublishSingleFile>true</PublishSingleFile>
+    <IncludeAllContentForSelfExtract>true</IncludeAllContentForSelfExtract>
+    <EnableCompressionInSingleFile>true</EnableCompressionInSingleFile>
   </PropertyGroup>
 
   <ItemGroup>

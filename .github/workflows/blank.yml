@@ -29,14 +29,23 @@ jobs:
     - name: Run tests
       run: dotnet test --configuration Release --no-build --verbosity normal
     
-    - name: Publish Windows Service
-      run: dotnet publish src/FailsafeAutoBackup.Service/FailsafeAutoBackup.Service.csproj -c Release -o publish/service --no-build
+    - name: Publish Windows Service (Self-Contained)
+      run: dotnet publish src/FailsafeAutoBackup.Service/FailsafeAutoBackup.Service.csproj -c Release -r win-x64 --self-contained true -p:PublishSingleFile=true -p:IncludeAllContentForSelfExtract=true -p:EnableCompressionInSingleFile=true -o publish/service
     
-    - name: Publish Tray Application
-      run: dotnet publish src/FailsafeAutoBackup.TrayApp/FailsafeAutoBackup.TrayApp.csproj -c Release -o publish/trayapp --no-build
+    - name: Publish Tray Application (Self-Contained)
+      run: dotnet publish src/FailsafeAutoBackup.TrayApp/FailsafeAutoBackup.TrayApp.csproj -c Release -r win-x64 --self-contained true -p:PublishSingleFile=true -p:IncludeAllContentForSelfExtract=true -p:EnableCompressionInSingleFile=true -o publish/trayapp
     
     - name: Publish Backend API
       run: dotnet publish src/FailsafeAutoBackup.BackendApi/FailsafeAutoBackup.BackendApi.csproj -c Release -o publish/api --no-build
+    
+    - name: Install WiX Toolset
+      run: dotnet tool install --global wix --version 4.0.5
+    
+    - name: Build WiX Installer
+      run: |
+        cd installer/wix
+        wix build Product.wxs -ext WixToolset.UI.wixext -arch x64 -out ../../FailsafeAutoBackup.msi
+      continue-on-error: true
     
     - name: Upload Service Artifact
       uses: actions/upload-artifact@v4
@@ -55,6 +64,14 @@ jobs:
       with:
         name: backend-api
         path: publish/api/
+    
+    - name: Upload MSI Installer
+      if: success() || failure()
+      uses: actions/upload-artifact@v4
+      with:
+        name: msi-installer
+        path: FailsafeAutoBackup.msi
+      continue-on-error: true
     
     - name: Create Release Archive
       if: github.ref == 'refs/heads/main'
