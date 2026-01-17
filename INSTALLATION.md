@@ -645,6 +645,268 @@ Write-Host "Location: $env:USERPROFILE\FailsafeAutoBackup\Backups" -ForegroundCo
 
 ---
 
+## Building the Installer
+
+This section is for developers who need to build the MSI installer from source.
+
+### Prerequisites for Building
+
+- Windows 10/11 (64-bit)
+- .NET 8.0 SDK
+- WiX Toolset v4.0.5 or later
+- PowerShell 7.0+
+
+### Build Process
+
+#### Method 1: Using GitHub Actions (Recommended)
+
+The GitHub Actions workflow automatically builds the installer on every push to the `main` branch:
+
+1. Push changes to the repository
+2. GitHub Actions will:
+   - Build the .NET projects
+   - Publish the Service and Tray App as self-contained executables
+   - Install WiX Toolset v4.0.5
+   - Install WiX UI Extension
+   - Build the MSI installer
+   - Upload artifacts (including the MSI)
+
+3. Download the `msi-installer` artifact from the workflow run
+
+#### Method 2: Local Build
+
+To build the installer locally on your Windows machine:
+
+```powershell
+# Step 1: Install .NET SDK 8.0
+# Download from: https://dotnet.microsoft.com/download/dotnet/8.0
+
+# Step 2: Install WiX Toolset v4
+dotnet tool install --global wix --version 4.0.5
+
+# Step 3: Clone the repository
+git clone https://github.com/grpaik92/failsafe-autobackup.git
+cd failsafe-autobackup
+
+# Step 4: Build the solution
+dotnet build --configuration Release
+
+# Step 5: Publish the Service (self-contained)
+dotnet publish src/FailsafeAutoBackup.Service/FailsafeAutoBackup.Service.csproj `
+    -c Release `
+    -r win-x64 `
+    --self-contained true `
+    -p:PublishSingleFile=true `
+    -p:IncludeAllContentForSelfExtract=true `
+    -p:EnableCompressionInSingleFile=true `
+    -o publish/service
+
+# Step 6: Publish the Tray App (self-contained)
+dotnet publish src/FailsafeAutoBackup.TrayApp/FailsafeAutoBackup.TrayApp.csproj `
+    -c Release `
+    -r win-x64 `
+    --self-contained true `
+    -p:PublishSingleFile=true `
+    -p:IncludeAllContentForSelfExtract=true `
+    -p:EnableCompressionInSingleFile=true `
+    -o publish/trayapp
+
+# Step 7: Install WiX UI Extension
+wix extension add WixToolset.UI.wixext
+
+# Step 8: Build the MSI installer
+cd installer/wix
+wix build Product.wxs -ext WixToolset.UI.wixext -arch x64 -out ../../FailsafeAutoBackup.msi
+
+# Step 9: Verify the MSI was created
+cd ../..
+if (Test-Path "FailsafeAutoBackup.msi") {
+    Write-Host "✓ MSI installer built successfully!" -ForegroundColor Green
+    $msi = Get-Item "FailsafeAutoBackup.msi"
+    Write-Host "  File: $($msi.FullName)" -ForegroundColor Gray
+    Write-Host "  Size: $([math]::Round($msi.Length / 1MB, 2)) MB" -ForegroundColor Gray
+} else {
+    Write-Host "✗ MSI installer build failed" -ForegroundColor Red
+}
+```
+
+### Common Build Issues
+
+#### Issue: WiX Extension Not Found
+
+**Error Message**:
+```
+error WIX0144: The extension 'WixToolset.UI.wixext' could not be found.
+```
+
+**Solution**:
+```powershell
+# Install the WiX UI extension
+wix extension add WixToolset.UI.wixext
+
+# Verify the extension is installed
+wix extension list
+```
+
+#### Issue: Published Files Not Found
+
+**Error Message**:
+```
+error LGHT0103: The system cannot find the file '..\..\publish\service\FailsafeAutoBackup.Service.exe'
+```
+
+**Solution**:
+```powershell
+# Ensure you've published the applications first
+# Run steps 5 and 6 from the build process above
+
+# Verify the files exist
+Test-Path "publish/service/FailsafeAutoBackup.Service.exe"
+Test-Path "publish/trayapp/FailsafeAutoBackup.TrayApp.exe"
+```
+
+#### Issue: License.rtf Not Found
+
+**Error Message**:
+```
+error LGHT0103: The system cannot find the file 'License.rtf'
+```
+
+**Solution**:
+```powershell
+# Ensure you're in the installer/wix directory when building
+cd installer/wix
+wix build Product.wxs -ext WixToolset.UI.wixext -arch x64 -out ../../FailsafeAutoBackup.msi
+```
+
+### Build Script
+
+For convenience, you can create a `build-installer.ps1` script:
+
+```powershell
+# build-installer.ps1
+# Complete build script for the MSI installer
+
+#Requires -RunAsAdministrator
+
+param(
+    [Parameter(Mandatory=$false)]
+    [string]$Configuration = "Release",
+    
+    [Parameter(Mandatory=$false)]
+    [string]$OutputPath = "FailsafeAutoBackup.msi"
+)
+
+$ErrorActionPreference = "Stop"
+
+Write-Host "=====================================" -ForegroundColor Cyan
+Write-Host "Building Failsafe AutoBackup MSI Installer" -ForegroundColor Cyan
+Write-Host "=====================================" -ForegroundColor Cyan
+Write-Host ""
+
+# Step 1: Clean previous builds
+Write-Host "[1/9] Cleaning previous builds..." -ForegroundColor Yellow
+if (Test-Path "publish") {
+    Remove-Item -Path "publish" -Recurse -Force
+}
+if (Test-Path $OutputPath) {
+    Remove-Item -Path $OutputPath -Force
+}
+
+# Step 2: Restore dependencies
+Write-Host "[2/9] Restoring dependencies..." -ForegroundColor Yellow
+dotnet restore
+
+# Step 3: Build solution
+Write-Host "[3/9] Building solution..." -ForegroundColor Yellow
+dotnet build --configuration $Configuration --no-restore
+
+# Step 4: Run tests
+Write-Host "[4/9] Running tests..." -ForegroundColor Yellow
+dotnet test --configuration $Configuration --no-build --verbosity minimal
+
+# Step 5: Publish Service
+Write-Host "[5/9] Publishing Windows Service..." -ForegroundColor Yellow
+dotnet publish src/FailsafeAutoBackup.Service/FailsafeAutoBackup.Service.csproj `
+    -c $Configuration `
+    -r win-x64 `
+    --self-contained true `
+    -p:PublishSingleFile=true `
+    -p:IncludeAllContentForSelfExtract=true `
+    -p:EnableCompressionInSingleFile=true `
+    -o publish/service
+
+# Step 6: Publish Tray App
+Write-Host "[6/9] Publishing Tray Application..." -ForegroundColor Yellow
+dotnet publish src/FailsafeAutoBackup.TrayApp/FailsafeAutoBackup.TrayApp.csproj `
+    -c $Configuration `
+    -r win-x64 `
+    --self-contained true `
+    -p:PublishSingleFile=true `
+    -p:IncludeAllContentForSelfExtract=true `
+    -p:EnableCompressionInSingleFile=true `
+    -o publish/trayapp
+
+# Step 7: Install WiX (if not already installed)
+Write-Host "[7/9] Checking WiX installation..." -ForegroundColor Yellow
+$wixInstalled = $null -ne (Get-Command "wix" -ErrorAction SilentlyContinue)
+if (-not $wixInstalled) {
+    Write-Host "  Installing WiX Toolset..." -ForegroundColor Gray
+    dotnet tool install --global wix --version 4.0.5
+}
+
+# Step 8: Install WiX UI Extension
+Write-Host "[8/9] Installing WiX UI Extension..." -ForegroundColor Yellow
+wix extension add WixToolset.UI.wixext --global
+
+# Step 9: Build MSI
+Write-Host "[9/9] Building MSI installer..." -ForegroundColor Yellow
+Set-Location "installer/wix"
+wix build Product.wxs -ext WixToolset.UI.wixext -arch x64 -out "../../$OutputPath"
+Set-Location "../.."
+
+# Verify
+Write-Host ""
+Write-Host "=====================================" -ForegroundColor Cyan
+Write-Host "Build Complete" -ForegroundColor Cyan
+Write-Host "=====================================" -ForegroundColor Cyan
+Write-Host ""
+
+if (Test-Path $OutputPath) {
+    $msi = Get-Item $OutputPath
+    Write-Host "✓ MSI installer built successfully!" -ForegroundColor Green
+    Write-Host ""
+    Write-Host "Installer Details:" -ForegroundColor Cyan
+    Write-Host "  File: $($msi.FullName)" -ForegroundColor White
+    Write-Host "  Size: $([math]::Round($msi.Length / 1MB, 2)) MB" -ForegroundColor White
+    Write-Host "  Created: $($msi.CreationTime)" -ForegroundColor White
+    Write-Host ""
+    Write-Host "Next Steps:" -ForegroundColor Cyan
+    Write-Host "  1. Test the installer on a clean VM" -ForegroundColor White
+    Write-Host "  2. Verify all components install correctly" -ForegroundColor White
+    Write-Host "  3. Run the post-installation verification script" -ForegroundColor White
+    exit 0
+} else {
+    Write-Host "✗ MSI installer build failed!" -ForegroundColor Red
+    Write-Host "Check the output above for errors" -ForegroundColor Yellow
+    exit 1
+}
+```
+
+**Usage**:
+```powershell
+# Build with default settings
+.\build-installer.ps1
+
+# Build Debug version
+.\build-installer.ps1 -Configuration Debug
+
+# Specify custom output path
+.\build-installer.ps1 -OutputPath "releases\FailsafeAutoBackup-v1.0.0.msi"
+```
+
+---
+
 ## Troubleshooting
 
 ### Common Issues
@@ -787,6 +1049,39 @@ notepad install.log
 
 # If all else fails, use manual installation
 ```
+
+#### Issue 7: GitHub Actions Build Failure
+
+**Symptoms**:
+- Build workflow fails with exit code 1
+- Error message: "The extension 'WixToolset.UI.wixext' could not be found"
+- MSI artifact not uploaded
+
+**Solutions**:
+
+This issue was resolved in the latest workflow. If you're still experiencing it:
+
+```yaml
+# Ensure the workflow includes these steps in order:
+
+- name: Install WiX Toolset
+  run: dotnet tool install --global wix --version 4.0.5
+
+- name: Install WiX UI Extension
+  run: wix extension add WixToolset.UI.wixext
+
+- name: Build WiX Installer
+  run: |
+    cd installer/wix
+    wix build Product.wxs -ext WixToolset.UI.wixext -arch x64 -out ../../FailsafeAutoBackup.msi
+```
+
+**Root Cause**: WiX Toolset v4 requires UI extensions to be installed separately. The workflow was missing the step to install the `WixToolset.UI.wixext` extension.
+
+**Verification**:
+1. Check the workflow run logs for the "Install WiX UI Extension" step
+2. Verify the "Build WiX Installer" step completes without errors
+3. Confirm the "Upload MSI Installer" step finds and uploads the file
 
 ### Diagnostic Script
 
