@@ -144,11 +144,12 @@ Write-Host "[7/7] Building MSI installer..." -ForegroundColor Green
 
 # Add WiX UI Extension
 Write-Host "  → Adding WiX UI Extension..." -ForegroundColor Gray
-wix extension add WixToolset.UI.wixext --global 2>&1 | Out-Null
-if ($LASTEXITCODE -eq 0) {
-    Write-Host "    ✓ WiX UI Extension added" -ForegroundColor Gray
+$extensionOutput = wix extension add WixToolset.UI.wixext --global 2>&1 | Out-String
+if ($LASTEXITCODE -eq 0 -or $extensionOutput -match "already exists") {
+    Write-Host "    ✓ WiX UI Extension ready" -ForegroundColor Gray
 } else {
-    Write-Host "    ⚠ WiX UI Extension may already be installed" -ForegroundColor Yellow
+    Write-Host "    ⚠ Extension installation returned an error, but continuing..." -ForegroundColor Yellow
+    Write-Host "    Output: $($extensionOutput.Trim())" -ForegroundColor Yellow
 }
 
 Set-Location "installer/wix"
